@@ -30,6 +30,15 @@ def get_engine() -> Engine:
     """
     database_url = os.getenv("DATABASE_URL")
     if database_url:
+        # Novější verze SQLAlchemy mohou pro obyčejné "postgresql://" (bez
+        # explicitně uvedeného ovladače) zkusit sáhnout po psycopg v3 místo
+        # psycopg2, kterého máme v requirements.txt. Explicitním "+psycopg2"
+        # v adrese tomuhle hádání předejdeme a chování bude vždy stejné,
+        # ať skript běží lokálně, nebo na GitHub Actions.
+        if database_url.startswith("postgresql://"):
+            database_url = database_url.replace(
+                "postgresql://", "postgresql+psycopg2://", 1
+            )
         return create_engine(database_url)
 
     missing = [v for v in REQUIRED_ENV_VARS if not os.getenv(v)]
