@@ -39,7 +39,7 @@ BASE_URL = "https://www.datart.cz"
 # běžný prohlížeč. Pokud by administrátor webu chtěl vědět, kdo mu
 # generuje provoz, může nás dohledat/kontaktovat.
 HEADERS = {
-    "User-Agent": "PriceTrackerBot/0.1 (osobni analyticky projekt; kontakt: ondrejjkysely@gmail.com)"
+    "User-Agent": "PriceTrackerBot/0.1 (osobni analyticky projekt; kontakt: tvuj-email@example.com)"
 }
 
 # Zpoždění mezi jednotlivými požadavky (sekundy) - šetrnost k serveru.
@@ -52,6 +52,13 @@ def fetch_page(url: str) -> str:
     # raise_for_status() vyhodí výjimku, pokud server vrátí chybu (4xx/5xx).
     # Bez tohohle bychom mohli tiše zpracovávat prázdnou/chybovou stránku.
     response.raise_for_status()
+
+    # DOČASNÝ diagnostický výpis - pomáhá zjistit, jestli nás server
+    # (typicky kvůli IP adrese cloudového stroje) neobsluhuje jinak než
+    # běžný prohlížeč. Status 200 samo o sobě neznamená "dostali jsme
+    # to, co chceme" - stránka s blokací/CAPTCHou taky často vrací 200.
+    print(f"  HTTP status: {response.status_code}, délka HTML: {len(response.text)} znaků")
+
     return response.text
 
 
@@ -165,6 +172,15 @@ def scrape_category(start_url: str, max_pages: int = 50) -> pd.DataFrame:
 
         products = extract_products_from_html(html)
         all_products.extend(products)
+
+        if not products:
+            # DOČASNÉ: pokud stránka nevrátila ani jeden produkt, vypíšeme
+            # kousek jejího HTML. Buď uvidíme běžnou stránku bez produktů
+            # (chyba v URL kategorie), nebo blokovací/CAPTCHA stránku
+            # (chyba na straně serveru vůči této IP adrese) - podle obsahu
+            # poznáme, kterým směrem problém řešit.
+            print("  UPOZORNĚNÍ: na stránce nebyl nalezen žádný produkt.")
+            print(f"  Prvních 500 znaků HTML: {html[:500]!r}")
 
         next_url = get_next_page_url(html, current_url)
 
