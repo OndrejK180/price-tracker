@@ -1,11 +1,12 @@
 name: Daily price scrape
 
+# POZNÁMKA: automatické plánované spouštění (schedule/cron) bylo záměrně
+# odstraněno. Datart.cz blokuje požadavky z cloudových IP adres GitHub
+# Actions (bot-detekce F5/TSPD) - viz kapitola 11 v dokumentaci projektu.
+# Produkční denní běh teď zajišťuje Windows Task Scheduler na lokálním
+# počítači. Workflow necháváme jen pro ruční spuštění (např. při pozdějším
+# testování proxy řešení), aby nechodily denní e-maily o neúspěšném běhu.
 on:
-  # Automatické spouštění každý den v 05:00 UTC (cca 7:00 českého času).
-  # Cron formát: minuta hodina den-v-měsíci měsíc den-v-týdnu. Čas je vždy UTC.
-  schedule:
-    - cron: "0 5 * * *"
-  # Tlačítko "Run workflow" v záložce Actions - pro ruční test bez čekání na cron.
   workflow_dispatch:
 
 jobs:
