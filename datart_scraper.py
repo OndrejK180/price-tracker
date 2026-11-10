@@ -64,15 +64,18 @@ def fetch_page(url: str) -> str:
 
 def _parse_czk_price(text: str) -> int | None:
     """
-    Vytáhne z textu jako "5 990 Kč" celé číslo 5990.
+    Vytáhne cenu z textu jako "5 990 Kč" -> 5990.
 
-    Používáme regex [^\\d] ("cokoliv, co NENÍ číslice") a smažeme to -
-    zbydou jen číslice, které pak spojíme zpátky do jednoho čísla.
-    Funguje to bez ohledu na to, jestli je oddělovač mezera, tvrdá
-    mezera (non-breaking space) nebo něco jiného.
+    Text může obsahovat i další čísla (např. "Nejnižší cena za posledních
+    30 dní. 8 790 Kč"), proto nelze jen smazat všechno kromě číslic.
+    Hledáme skupiny číslic s případnými tisícovými oddělovači
+    (mezera / tvrdá mezera + přesně 3 číslice) a bereme POSLEDNÍ skupinu,
+    protože cena stojí v textu na konci.
     """
-    digits = re.sub(r"[^\d]", "", text)
-    return int(digits) if digits else None
+    groups = re.findall(r"\d+(?:[\s\u00a0]\d{3})*", text)
+    if not groups:
+        return None
+    return int(re.sub(r"\D", "", groups[-1]))
 
 
 def extract_products_from_html(html: str) -> list[dict]:
