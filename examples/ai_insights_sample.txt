@@ -1,0 +1,11 @@
+UKÁZKA: takto by mohl vypadat výstup modulu ai_insights.py.
+Text je napsán ručně podle promptu a ukázkových dat, NEVZNIKL voláním API.
+
+Ke dni 24. 11. 2026 sledujeme 107 produktů. Oproti prvnímu dni sledování
+(10. 10. 2026) jsou stejné produkty (porovnáno 95) v průměru o 21,6 % levnější
+a mediánově o 25,7 % levnější. Data ukazují čtyři období, kdy zlevnilo více
+produktů najednou: 3.-6. 11. (109 produktů), 20.-21. 11. (40), 21.-22. 11. (16)
+a 22.-23. 11. (55). Přesné dny změn neznáme, vždy jde o rozmezí mezi dvěma
+snapshoty. V posledním snapshotu ubylo z nabídky 10 produktů, žádný nepřibyl;
+tento údaj se neprojevuje v like-for-like indexu. Příčiny změn cen z dat určit
+nelze.
