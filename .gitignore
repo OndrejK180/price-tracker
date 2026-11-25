@@ -5,3 +5,4 @@ __pycache__/
 *.docx
 poznamky*
 scraper_log.txt
+latest_summary.txt
